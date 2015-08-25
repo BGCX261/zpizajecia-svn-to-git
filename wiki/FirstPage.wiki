@@ -1,0 +1,72 @@
+1.1. The architecture's description
+AMD x86-64 architecture is a simple but powerful backward-compatible extension of the obsolete industrial architecture x86 [1]. It adds 64-bit address space and extends register resources for supporting more performance for recompiled 64-bit programs providing support of obsolete 16-bit and 32-bit code of applications and operational systems without modifying or recompiling them.
+
+Necessity of 64-bit x86 architecture is explained by applications which need large address space. These are high-performance servers, data managers, CAD-systems and of course games. Such applications will gain an advantage due to 64-bit address space and more registers. Few registers available in obsolete x86 architecture limit computing-task performance. More registers provide sufficient performance for most applications.
+
+x86-64 architecture introduces two new peculiarities:
+
+1. Extended registers (Picture 1):
+
+8 general-purpose registers;
+all 16 general-purpose registers are 64-bit;
+8 new 128-bit XMM registers;
+a new command prefix (REX) for access to extended registers.
+2. special mode "Long Mode" which is shown in Table 1:
+
+up to 64-bit virtual addresses;
+64-bit command pointer (RIP);
+flat address space.
+
+Picture 1. Set of x86-64 registers
+
+
+Table 1. Processor operating modes.
+
+Table 2 contains comparison of registers' and stack's resources available to an application in different modes. Left columns show resources provided by obsolete x86 architecture which are available only to compatibility. Right columns show resources available in 64-bit mode. The difference between the modes is marked grey.
+
+
+Table 2. Registers and stack available in different modes
+
+As shown in Table 2 obsolete x86 architecture (this mode is called legacy mode in x86-64) supports 8 general-purpose registers. But actually only 4 registers are usually used: EAX, EBX, ECX, EDX. Registers EBP, ESI, EDI, ESP have a special purpose. X86-64 architecture adds 8 general-purpose registers and enlarges the register range from 32 bits to 64 bits. It allows compilers to increase code performance. A 64-bit compiler can use registers for storing variables more efficiently. The compiler also allows you to minimize memory access by locating operation inside general-purpose registers.
+
+x86-64 architecture supports the whole set of x86 instructions and adds some new instructions for supporting long-mode. The commands are divided into several subsets:
+General-purpose commands. These are main x86 integer commands used in all programs. Most of them are intended for loading, saving and processing data located in general-purpose registers or memory. Some of these commands manage the command stream providing passage from one program section to another.
+128-bit media-commands. These are SSE and SSE2 (streaming SIMD extension) commands intended for loading, saving or processing data located in 128-bit XMM registers. They perform integer or floating-point operations over vector (packed) and scalar data types. As vector commands can perform one operation over a data set independently they are called single-instruction, multiple-data (SIMD) commands. They are used for media- and science applications for processing data blocks.
+64-bit media-commands. These are multimedia extension (MMX) and 3DNow! Commands. They save, restore and process data located in 64-bit MMX registers. Like 128-bit commands described before they perform integer and floating-point operations over vector (packed) and scalar data.
+x87 commands. They are intended for working with the floating point in obsolete x87 applications. They process data in x87 registers.
+Some of these commands connect two or more subsets of the commands described above. For example, such are commands of data transmission between general-purpose registers and XMM or MMX registers.
+
+Let's consider in detail the operating modes shown in Table 1 supported by x86-64. In most cases addresses' and operands' sizes can be overlayed by a command prefix.
+
+Let's describe long-mode at first. This is an extension of the obsolete protected mode. Long-mode consists of two submodes: 64-bit mode and compatibility mode. 64-bit mode supports all the new possibilities and register extensions introduced into x86-64. Compatibility mode supports binary compatibility with existing 16-bit and 32-bit code. Long-mode doesn't support obsolete real mode or obsolete virtual-8086 mode and it also doesn't support hardware task switching.
+
+As 64-bit mode supports 64-bit address space you need to use a new 64-bit operational system for its work. Meanwhile, the existing applications can be launched without recompiling in compatibility mode under the OS working in 64-bit mode. For 64-bit command addressing a 64-bit register (RIP) and a new addressing mode with single flat address space for code, stack and data are used.
+
+64-bit mode implements support of extended registers through a new prefix group of REX commands.
+
+In 64-bit mode addresses' size is 64 bits on default but implementations of x86-64 may have a smaller size. An operand's size is 32 bits on default. For most instructions the operand's size can be overlaid using a prefix of REX-type commands.
+
+64-bit mode provides data addressing relative to the 64-bit register RIP. X86 architecture provided addressing relative to IP register only in control transfer commands. RIP-relative addressing increases efficiency of position-independent code and code addressing global data.
+
+Some opcode commands were redefined to support extended registers and 64-bit addressing.
+
+Compatibility mode is intended for executing existing 16-bit and 32-bit programs in a 64-bit OS. Applications are launched in compatibility mode with the use of 32- or 16-bit address space and can have access to 4Gb of virtual address space. Commands' prefixes can switch 16- and 32-bit addresses and operands' sizes.
+
+From the application's viewpoint compatibility mode looks like the obsolete protected x86 mode but from the viewpoint of the OS (address translation, processing of interruptions and exceptions) 64-bit mechanisms are used.
+
+Legacy mode provides binary compatibility not only with 16- and 32-bit applications but with 16- and 32-bit operational systems as well. It includes three modes:
+
+Protected mode. 16- and 32-bit programs with segmental memory organization, privilege and virtual memory support. Address space is 4Gb.
+Virtual-8086 mode. Supports 16-bit applications launched as tasks in protected mode. Address space is 1Mb.
+Real mode. Supports 16-bit programs with simple register addressing of segmented memory. Virtual memory and privileges are not supported. 1Mb of memory is available.
+Legacy mode is used only when 16- and 32-bit OS are operating.
+
+1.2. The architecture's advantages
+Let's outline the main advantages of AMD x86-64 architecture.
+
+64-bit address space.
+Extended register set.
+Developer-habitual command set.
+Possibility of launching obsolete 32-bit applications in a 64-bit OS.
+Possibility of using a 32-bit OS.
+idz tu [Omlet]
